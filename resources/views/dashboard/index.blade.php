@@ -36,6 +36,7 @@
         crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js" type="text/javascript"></script>
     <script src="https://cdn.datatables.net/1.11.5/js/dataTables.bootstrap5.min.js" type="text/javascript"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.8.4/moment.min.js"></script>
     <script>
         $(document).ready(function() {
             $('#dataTable').DataTable({
@@ -67,8 +68,12 @@
                         name: 'location'
                     },
                     {
-                        data: 'date',
-                        name: 'date'
+                        data: null,
+                        name: 'date',
+                        render: function(data) {
+                            return moment(data['date']).format('DD - MMM - YYYY');
+                            // return data['date'];
+                        }
                     },
                     {
                         data: 'participant',

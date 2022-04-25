@@ -12,11 +12,6 @@ class EventController extends Controller
 {
     public function index(Request $request)
     {
-        // if ($request->ajax()) {
-
-
-        //     return response()->json($params);
-        // }
         $params = [
             'event' => Event::get()
         ];
@@ -32,11 +27,11 @@ class EventController extends Controller
     {
         $validate = Validator::make($request->all(), [
             'title' => 'required',
-            'image' => 'required|image',
             'location' => 'required',
             'participant' => 'required',
-            'note' => 'required',
             'date' => 'required',
+            'note' => 'required',
+            'image' => 'required|image',
         ]);
 
         if ($validate->fails()) {

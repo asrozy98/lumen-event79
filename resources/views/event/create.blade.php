@@ -39,7 +39,7 @@
             </div>
         </div>
         <div class="col-7">
-
+            <img src="{{ url('/assets/event.png') }}" class="card-img-top img-fluid" alt="">
         </div>
     </div>
 @endsection
@@ -93,7 +93,6 @@
                         title: res.message,
                         html: res.type == 'error' ? res.error : '',
                     });
-                    // setTimeout(location.reload.bind(location), 5000);
                 },
                 error: function(res) {
                     Swal.fire({

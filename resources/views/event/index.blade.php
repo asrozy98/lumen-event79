@@ -11,13 +11,14 @@
                 <div class="card-body">
                     <h6><i class="bi bi-geo-alt-fill me-2"></i>{{ $item->location }}</h6>
                     <h3 class="card-title">{{ $item->title }}</h3>
+                    <p class="text-secondary">{{ Carbon\Carbon::parse($item->date)->format('d-M-Y') }}</p>
                 </div>
                 <div class="border-top border-bottom p-2 mb-2 text-center">
                     @php
                         $participants = explode(',', $item->participant);
                     @endphp
                     @foreach ($participants as $participant)
-                        <i class="bi bi-person-fill mx-2"></i>{{ $participant }},
+                        <i class="bi bi-person-fill mx-2"></i>{{ $participant }}.
                     @endforeach
                 </div>
                 <div class="bg-light p-2 mb-2 rounded-3">
