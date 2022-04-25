@@ -53,7 +53,6 @@
                             callback(res);
                         }
                     })
-
                 },
                 columns: [{
                         data: 'id',
@@ -72,7 +71,6 @@
                         name: 'date',
                         render: function(data) {
                             return moment(data['date']).format('DD - MMM - YYYY');
-                            // return data['date'];
                         }
                     },
                     {

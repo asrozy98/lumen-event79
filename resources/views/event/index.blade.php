@@ -3,9 +3,9 @@
     <div class="mt-3 p-2 row">
         <h2 class="col">Events</h2>
     </div>
-    <div class="p-2 bg-light row">
+    <div class="bg-light row justify-content-evenly">
         @forelse ($event as $item)
-            <div class="card col-3 rounded-3 m-2">
+            <div class="card col-3 m-4 rounded-3">
                 <img src="{{ url('storage/' . $item->image) }}" class="card-img-top img-fluid"
                     alt="{{ url('storage/' . $item->image) }}">
                 <div class="card-body">
@@ -18,7 +18,7 @@
                         $participants = explode(',', $item->participant);
                     @endphp
                     @foreach ($participants as $participant)
-                        <i class="bi bi-person-fill mx-2"></i>{{ $participant }}.
+                        <i class="bi bi-person-fill mx-2"></i>{{ $participant }},
                     @endforeach
                 </div>
                 <div class="bg-light p-2 mb-2 rounded-3">
@@ -31,6 +31,7 @@
             </div>
         @endforelse
     </div>
+    {{ $event->links() }}
 @endsection
 @push('css')
     <link rel="stylesheet"
