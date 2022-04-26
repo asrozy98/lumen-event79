@@ -4,6 +4,32 @@
         <h2 class="col">Dashboard</h2>
     </div>
     <div class="p-2 bg-light">
+        <div class="d-print-none">
+            <div class="row align-items-end">
+                <h4>Filter</h4>
+                <div class="col-3">
+                    <label for="filter">Searching:</label>
+                    <input type="text" class="form-control" id="searching" onkeyup="onSearch()">
+                </div>
+                <div class="col-6">
+                    <label for="dateRange">Date:</label>
+                    <div class="input-group input-daterange">
+                        <input type="text" class="form-control" id="dateStart" autocomplete="off" data-provide="datepicker"
+                            placeholder="{{ $dateStart }}" data-date-autoclose="true" data-date-format="mm/dd/yyyy"
+                            data-date-today-highlight="true" onchange="onChange()">
+                        <div class="input-group-addon m-2">to</div>
+                        <input type="text" class="form-control" id="dateEnd" autocomplete="off" data-provide="datepicker"
+                            placeholder="{{ $dateEnd }}" data-date-autoclose="true" data-date-format="mm/dd/yyyy"
+                            data-date-today-highlight="true" onchange="onChange()">
+                    </div>
+                </div>
+                <div class="col-2">
+                    <button class="btn btn-secondary" onclick="reset()">Reset</button>
+                    <button class="btn btn-warning" onclick="window.print()">Print</button>
+                </div>
+            </div>
+            <hr>
+        </div>
         <table class="table table-striped" id="dataTable">
             <thead>
                 <tr>
@@ -38,15 +64,40 @@
     <script src="https://cdn.datatables.net/1.11.5/js/dataTables.bootstrap5.min.js" type="text/javascript"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.8.4/moment.min.js"></script>
     <script>
+        let dataTable;
+
+        function onChange() {
+            dataTable.draw();
+        }
+
+        function onSearch() {
+            value = $('#searching').val();
+            dataTable.search(value).draw();
+        }
+
+        function reset() {
+            $('#searching').val('');
+            $('#dateStart').val('');
+            $('#dateEnd').val('');
+            dataTable.search('').draw();
+        }
+
         $(document).ready(function() {
-            $('#dataTable').DataTable({
+            dataTable = $('#dataTable').DataTable({
                 processing: false,
                 serverSide: true,
+                dom: 'Brltip',
+                lengthMenu: [
+                    [5, 25, 50, 100],
+                    [5, 25, 50, 100]
+                ],
                 ajax: function(data, callback) {
                     $.ajax({
                         url: "{{ url('dashboard') }}",
                         'data': {
-                            ...data
+                            ...data,
+                            dateStart: $('#dateStart').val(),
+                            dateEnd: $('#dateEnd').val(),
                         },
                         dataType: 'json',
                         success: function(res) {

@@ -30,7 +30,7 @@ class EventController extends Controller
             'location' => 'required',
             'participant' => 'required',
             'date' => 'required',
-            'note' => 'required',
+            'note' => 'required|min:50',
             'image' => 'required|image',
         ]);
 
@@ -74,24 +74,38 @@ class EventController extends Controller
 
     public function dashboard(Request $request)
     {
+        $dateStart = Event::orderBy('date', 'asc')->first()->date;
+        $dateEnd = Event::latest('date')->first()->date;
+
         if ($request->ajax()) {
+            $dateStart = $request->get('dateStart') ? Carbon::parse($request->get('dateStart')) : Event::orderBy('date', 'asc')->first()->date;
+            $dateEnd = $request->get('dateEnd') ? Carbon::parse($request->get('dateEnd')) : Event::latest('date')->first()->date;
+
+            $start = $request->get('start') ?? 0;
             $search = $request->input('search.value');
+            $length = $request->get('length') ?? 5;
             $draw = $request->get('draw');
+
             if ($search) {
-                $data = Event::where('title', 'like', '%' . $search . '%')->orWhere('note', 'like', '%' . $search . '%')->get();
+                $data = Event::where('title', 'like', '%' . $search . '%')->orWhere('location', 'like', '%' . $search . '%')->orWhere('participant', 'like', '%' . $search . '%')->whereBetween('date', [$dateStart, $dateEnd])->skip($start)->limit($length)->get();
             } else {
-                $data = Event::get();
+                $data = Event::whereBetween('date', [$dateStart, $dateEnd])->skip($start)->limit($length)->get();
             }
             $params = [
                 'draw' => $draw,
-                'recordsTotal' => $data->count(),
-                'recordsFiltered' => $data->count(),
-                'data' => $data
+                'recordsTotal' => Event::count(),
+                'recordsFiltered' => Event::count(),
+                'data' => $data,
+                'dateStart' => $dateStart,
+                'date' => $dateEnd,
             ];
 
             return json_encode($params);
         }
 
-        return view('dashboard.index');
+        return view('dashboard.index')->with([
+            'dateStart' => Carbon::parse($dateStart)->format('d/m/y'),
+            'dateEnd' => Carbon::parse($dateEnd)->format('d/m/y'),
+        ]);
     }
 }
